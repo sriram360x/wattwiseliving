@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appliance Energy Calculator</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Fullscreen Video Styling */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            object-fit: cover;
+        }
+
+        /* Form Container Styling */
+        .register-section {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            width: 350px;
+            margin: 100px auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* General Body Styling */
+        .register-body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Input Fields Styling */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 40%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Button Styling */
+        .submit-button,
+        .calculate-button {
+            width: 10%;
+            padding: 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .calculate-button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        .calculate-button:active {
+            background-color: #1e7e34;
+            transform: scale(1);
+        }
+
+        a {
+            color: #00d1ff;
+        }
+
+        /* Centering Calculator Title */
+        .calculator-section h1 {
+            text-align: center;
+        }
+
+        /* Centering Result Display */
+        .result-display {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: white;
+        }
+    </style>
+</head>
+<body class="calculator-body">
+    <header>
+        <div class="logo">Watt Wise Living</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'login' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="calculator-section">
+            <h1>Energy Usage Calculator</h1>
+            <form id="energyform" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="form-group">
+                    <label for="appliance">Appliance:</label>
+                    <select id="appliances" name="appliances" onchange="updatePowerRating()"> 
+                        <option value="">-- Select an Appliance --</option>
+                        <option value="10">LED Bulb</option> 
+                        <option value="150">Television</option> 
+                        <option value="400">Desktop</option> 
+                        <option value="50">Laptop/Notebook</option> 
+                        <option value="10">Wi-Fi Router</option>
+                        <option value="30">Printer</option>
+                        <option value="5">Phone Charger</option>
+                        <option value="1500">Water Heater</option>
+                        <option value="2000">Air Conditioner</option>
+                        <option value="150">Refrigerator</option>
+                        <option value="1200">Oven</option>
+                        <option value="1000">Iron Box</option>
+                        <option value="500">Washing Machine</option>
+                        <option value="75">Ceiling Fan</option>
+                        <option value="1200">Dishwasher</option>
+                    </select> 
+                </div>
+                <div class="form-group">
+                    <label for="power">Power Rating (Watts):</label>
+                    <input type="number" id="power" name="power" placeholder="e.g., 150" required>
+                </div>
+                <div class="form-group">
+                    <label for="hours">Usage Hours per Day:</label>
+                    <input type="number" id="hours" name="hours" placeholder="e.g., 5" required>
+                </div>
+                <div class="form-group">
+                    <label for="days">Days Used per Month:</label>
+                    <input type="number" id="days" name="days" placeholder="e.g., 30" required>
+                </div>
+                <button type="button" class="calculate-button" onclick="calculateEnergy()">Calculate</button>
+            </form>
+            <div id="result" class="result-display"></div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Watt Wise Living. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        function calculateEnergy() {
+    const power = parseFloat(document.getElementById('power').value);
+    const hours = parseFloat(document.getElementById('hours').value);
+    const days = parseFloat(document.getElementById('days').value);
+
+    if (isNaN(power) || isNaN(hours) || isNaN(days)) {
+        document.getElementById('result').innerText = "Please enter valid numbers for all fields.";
+        return;
+    }
+
+    const energyConsumption = (power * hours * days) / 1000; // kWh
+    document.getElementById('result').innerText = `Estimated Monthly Energy Usage: ${energyConsumption.toFixed(2)} kWh`;
+
+    // Send data to the server
+    fetch('/calculator/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: JSON.stringify({ energy_usage: energyConsumption }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Energy usage saved to your profile!');
+        } else {
+            alert('Error saving energy usage.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function getCSRFToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === 'csrftoken') {
+            return value;
+        }
+    }
+    return '';
+}
+</script><br><br>
+</body>
+</html>

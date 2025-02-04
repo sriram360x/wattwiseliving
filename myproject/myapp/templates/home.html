@@ -1,0 +1,70 @@
+<!-- home.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watt Wise Living - Home</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="home-body">
+    <header>
+        <div class="logo">Watt Wise Living</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}" class="active">Home</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Watt Wise Living</h1>
+                <p>Discover smarter ways to manage energy and maximize efficiency.</p>
+                <a href="#features" class="cta-button">Explore Features</a>
+            </div>
+            <div class="hero-image">
+                <img src="static/dall-e main.png" alt="Energy Efficiency Illustration">
+            </div>
+        </section>
+        <section id="features" class="features">
+            <h2>Our Features</h2>
+            <div class="feature-grid">
+                <a href="{% url 'energyusage' %}"><div class="feature-item">
+                    <img src="static/dall-e feature1.png" alt="Track Energy Usage">
+                    <h3>Track Energy Usage</h3>
+                    <p>Monitor your energy consumption in real-time with our advanced analytics tools.</p>
+                </div></a>
+                <a href="{% url 'costsavings' %}"><div class="feature-item">
+                    <img src="static/dall-e feature2.png" alt="Cost Savings">
+                    <h3>Save on Costs</h3>
+                    <p>Get personalized tips to reduce energy waste and save on utility bills.</p>
+                </div></a>
+                <a href="{% url 'sustainability' %}"><div class="feature-item">
+                    <img src="static/copilot feature3.png" alt="Sustainability Goals">
+                    <h3>Meet Sustainability Goals</h3>
+                    <p>Achieve a greener lifestyle with our eco-friendly recommendations.</p>
+                </div></a>
+            </div>
+        </section>
+        <section class="call-to-action">
+            <h2>Ready to Get Started?</h2>
+            <a href="{% url 'register' %}" class="cta-button">Join Now</a>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Watt Wise Living. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watt Wise Living - Profile</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+header, footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+header .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a.active {
+    text-decoration: underline;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.profile-section {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #3c00ff;
+    border-radius: 30px;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    background: #050505;
+    padding: 15px;
+    border-radius: 20px;
+    text-align: center;
+    width: 120px;
+}
+
+footer .footer-content {
+    font-size: 0.9em;
+}
+
+a {
+    text-decoration: none;
+}
+
+.profile-section a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff69b4; /* Pink color */
+    color: white;
+    border-radius: 50px; /* Makes the button pill-shaped */
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.profile-section a:hover {
+    background-color: #ff1493; /* Darker pink for hover effect */
+}
+
+
+    </style>
+</head>
+<body class="profile-body">
+    <header>
+        <div class="logo">Watt Wise Living</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'profile' %}" class="active">Profile</a></li>
+                <li><a href="{% url 'login' %}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="profile-section">
+            <h1>Your Profile</h1>
+            {% if user.is_authenticated %}
+            <div class="profile-details">
+                <h2>Welcome, {{ user.username }}</h2>
+                <p>Email: {{ user.email }}</p>
+                <p>Member since: {{ user.date_joined|date:"F Y" }}</p>
+                <h2>Estimated Monthly Usage</h2>
+                <p>{{ energy_usage }} kWh</p>
+                
+
+            </div>
+            {% else %}
+            <p>You are not logged in. <a href="{% url 'login' %}">Login</a> to view your profile.</p>
+            {% endif %}
+            <div class="energy-stats">
+                <h2>Your Energy Stats</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>Monthly Usage</h3>
+                        <p>320 kWh</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Energy Saved</h3>
+                        <p>15%</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Carbon Offset</h3>
+                        <p>8 kg</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <a href="{% url 'calculator' %}">Energy Calculator</a>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Watt Wise Living. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
